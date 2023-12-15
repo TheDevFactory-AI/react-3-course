@@ -1,0 +1,28 @@
+name: Setup Sonar Cloud project for New Repo
+
+on:
+  repository_dispatch:
+    types: [created]
+
+jobs:
+  create_sonarcloud_project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug information
+        run: |
+          echo "Triggered workflow for repository $GITHUB_REPOSITORY"
+          echo "GitHub Username: $(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 1)"
+      
+      - name: Create SonarCloud project
+        run: |
+          # Extract repository information
+          GITHUB_USERNAME=$(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 1)
+          
+          # Define project name
+          PROJECT_NAME="$GITHUB_USERNAME-react-course-1"
+          
+          # Make the API call to create Sonar Cloud project and capture response
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST -u "681873653b5ca24f74561ff6dfb4f7cd8580d190" -d "name=$PROJECT_NAME" "https://sonarcloud.io/api/projects/create")
+          
+          # Log the HTTP response code
+          echo "API Response: $RESPONSE"
